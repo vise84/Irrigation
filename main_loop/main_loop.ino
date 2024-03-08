@@ -335,6 +335,8 @@ void loop() {
 
     refreshScreen();
 
+    if (analogRead (SET) < 1000) { time = millis();}
+
     if (isItTimeToSetTime()) {
         setMode(now()); // note that the "now" would be wrong when this is called
     }
