@@ -59,12 +59,13 @@ char buffer[10];
 unsigned long time=0;
 unsigned long timeSet=0;
 float temp=0;
-DateTime currentTime;
+//DateTime currentTime;
 
 
 void setup() {
     Serial.begin(9600);
     Wire.begin();
+    Serial.println("SETUP STARTED");
     rtc.begin();
     lcd.begin();
 
@@ -233,6 +234,7 @@ void TurnOffPump(PumpID pump, bool triggeredByButton) {
 
 
 void setMode(DateTime now_) {
+    Serial.println("SET TIME STARTED");
     boolean setMode = true;
     int setModeLevel = 0;
  
@@ -340,8 +342,7 @@ bool isItTimeToSetTime() {
 void loop() {
 
     refreshScreen();
-    Serial.println("LOOP STARTED");
-
+   
     if (analogRead (SET) < 1000) { time = millis();}
 
     if (isItTimeToSetTime()) {
@@ -371,5 +372,5 @@ void loop() {
     }
     
     // time sort of updates once a second (not really...)
-    delay (500);
+    delay (1000);
 }
