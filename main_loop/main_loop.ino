@@ -169,6 +169,8 @@ bool IsButtonPressed(PumpID pump) {
 bool WasButtonPressedRecently(PumpID pump) {
     unsigned long recencyThreshold = (pump == PUMP1) ? P1buttonPressRecentUntil : P2buttonPressRecentUntil;
     return now().unixtime() <= recencyThreshold;
+    Serial.println("recentlypressedbutton");
+    Serial.println(pump);
 }
 
 void TurnOnPump(PumpID pump, bool triggeredByButton) {
@@ -194,8 +196,10 @@ void TurnOnPump(PumpID pump, bool triggeredByButton) {
     if (triggeredByButton) {
         if (pump == PUMP1) {
             P1buttonPressRecentUntil = now().unixtime() + onByButtonTimer;
+          Serial.println("Triggered by BUTTON1");   
         } else if (pump == PUMP2) {
             P2buttonPressRecentUntil = now().unixtime() + onByButtonTimer;
+            Serial.println("Triggered by BUTTON2");
         }
     }
 }
@@ -226,8 +230,10 @@ void TurnOffPump(PumpID pump, bool triggeredByButton) {
     if (triggeredByButton) {
         if (pump == PUMP1) {
             P1buttonPressRecentUntil = now().unixtime() + offByButtonTimer;
+            Serial.println("PIPPPPPPPOOOOOOOOOOO");
         } else if (pump == PUMP2) {
            P2buttonPressRecentUntil = now().unixtime() + offByButtonTimer;
+             Serial.println("DAIIIIIIIIIIIIIIIIII");
         }
     }
 }
@@ -355,7 +361,7 @@ void loop() {
         bool itsTimeToBeOn = IsItTimeToBeOn(pump);
         bool buttonIsPressed = IsButtonPressed(pump);
         bool buttonPressedRecently = WasButtonPressedRecently(pump);
-
+        
         if (!pumpIsOn) {
             if (buttonIsPressed) {
                 TurnOnPump(pump, true);
