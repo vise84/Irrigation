@@ -65,7 +65,6 @@ float temp=0;
 void setup() {
     Serial.begin(9600);
     Wire.begin();
-    Serial.println("SETUP STARTED");
     rtc.begin();
     lcd.begin();
 
@@ -116,8 +115,8 @@ bool IsPumpOn(PumpID pump) {
 
 bool IsItTimeToBeOn(PumpID pump) {
     int turnOnHH, turnOffHH;
-  const int* skipDaysPerMonth;
-  const bool* turnOnMonths;
+    const int* skipDaysPerMonth;
+    const bool* turnOnMonths;
 
     unsigned long turnedOffAt;
 
@@ -152,14 +151,12 @@ bool IsItTimeToBeOn(PumpID pump) {
 bool IsButtonPressed(PumpID pump) {
       if (pump == PUMP1) {
        if (digitalRead (BUTTON1) == 0) {
-        Serial.println("BUTTON1 pressed");
       return true;
         } 
     return false;
       }
     if (pump == PUMP2) {
        if (digitalRead (BUTTON2) == 0) {
-        Serial.println("BUTTON2 pressed");
       return true;
         } 
     return false;
@@ -169,8 +166,6 @@ bool IsButtonPressed(PumpID pump) {
 bool WasButtonPressedRecently(PumpID pump) {
     unsigned long recencyThreshold = (pump == PUMP1) ? P1buttonPressRecentUntil : P2buttonPressRecentUntil;
     return now().unixtime() <= recencyThreshold;
-    Serial.print("recentlypressedbutton");
-    Serial.println(pump);
 }
 
 void TurnOnPump(PumpID pump, bool triggeredByButton) {
@@ -180,9 +175,6 @@ void TurnOnPump(PumpID pump, bool triggeredByButton) {
         delay(2000);
         digitalWrite(IN1, LOW);   // Imposta il pin IN1 LOW 
         digitalWrite(IN2, LOW);   // Imposta il pin IN2 LOW
-        Serial.println("PUMP1 is ON"); 
-        Serial.print("pump = ");
-        Serial.println(pump);
         P1isOn = true;
     } else if (pump == PUMP2) {
         // TODO: Add code to turn on P2
@@ -191,19 +183,14 @@ void TurnOnPump(PumpID pump, bool triggeredByButton) {
         delay(2000);
         digitalWrite(IN3, LOW);   // Imposta il pin IN1 LOW 
         digitalWrite(IN4, LOW);   // Imposta il pin IN2 LOW
-        Serial.println("PUMP2 is ON"); 
-        Serial.print("pump = ");
-        Serial.println(pump);
         P2isOn = true;
     }
 
     if (triggeredByButton) {
         if (pump == PUMP1) {
-            P1buttonPressRecentUntil = now().unixtime() + onByButtonTimer;
-          Serial.println("Triggered by BUTTON1");   
+            P1buttonPressRecentUntil = now().unixtime() + onByButtonTimer;   
         } else if (pump == PUMP2) {
             P2buttonPressRecentUntil = now().unixtime() + onByButtonTimer;
-            Serial.println("Triggered by BUTTON2");
         }
     }
 }
@@ -216,9 +203,6 @@ void TurnOffPump(PumpID pump, bool triggeredByButton) {
         delay(2000);
         digitalWrite(IN1, LOW);   // Imposta il pin IN1 LOW 
         digitalWrite(IN2, LOW);   // Imposta il pin IN2 LOW
-        Serial.println("PUMP1 is OFF"); 
-        Serial.print("pump = ");
-        Serial.println(pump);
         P1isOn = false;
         P1turnedOffAt = now().unixtime();
     } else if (pump == PUMP2) {
@@ -228,34 +212,23 @@ void TurnOffPump(PumpID pump, bool triggeredByButton) {
         delay(2000);
         digitalWrite(IN3, LOW);   // Imposta il pin IN1 LOW 
         digitalWrite(IN4, LOW);   // Imposta il pin IN2 LOW 
-        Serial.println("PUMP2 is OFF");
-        Serial.print("pump = ");
-        Serial.println(pump);
         P2isOn = false;
         P2turnedOffAt = now().unixtime();
     }
 
-    if (triggeredByButton) {
-        Serial.print("pump = ");
-        Serial.println(pump);
-        Serial.print("PUMP1 = ");
-        Serial.println(PUMP1);  
-        Serial.print("PUMP2 = ");
-        Serial.println(PUMP2);            
+    if (triggeredByButton) {    
         if (pump == PUMP1) {
             P1buttonPressRecentUntil = now().unixtime() + offByButtonTimer;
-            Serial.println("PIPPPPPPPOOOOOOOOOOO");
         } else if (pump == PUMP2) {
           
            P2buttonPressRecentUntil = now().unixtime() + offByButtonTimer;
-             Serial.println("DAIIIIIIIIIIIIIIIIII");
         }
     }
 }
 
 
 void setMode(DateTime now_) {
-    Serial.println("SET TIME STARTED");
+   
     boolean setMode = true;
     int setModeLevel = 0;
  
