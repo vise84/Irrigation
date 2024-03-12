@@ -361,7 +361,7 @@ void loop() {
     for (PumpID pump : pumps) {
         bool pumpIsOn = IsPumpOn(pump);
         bool itsTimeToBeOn = IsItTimeToBeOn(pump);
-        bool buttonIsPressed = IsButtonPressed(pump);
+        bool buttonIsPressed = true; //according Puglierin request
         bool buttonPressedRecently = WasButtonPressedRecently(pump);
         
         if (!pumpIsOn) {
@@ -381,4 +381,5 @@ void loop() {
     
     // time sort of updates once a second (not really...)
     delay (1000);
+    while(1); //infinite for loop blocking
 }
