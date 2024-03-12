@@ -27,8 +27,8 @@ enum PumpID {
 
 // Settings
 // scheduling
-const unsigned long onByButtonTimer = 3600000; // 60 minutes in milliseconds
-const unsigned long offByButtonTimer = 7200000; // 120 minutes in milliseconds
+const unsigned long onByButtonTimer = 10000; // 10 sec in milliseconds
+const unsigned long offByButtonTimer = 10000; // 10sec in milliseconds
 
 const int P1turnOnHH = 1;
 const int P1turnOffHH = 2;
