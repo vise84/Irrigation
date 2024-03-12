@@ -228,6 +228,9 @@ void TurnOffPump(PumpID pump, bool triggeredByButton) {
     }
 
     if (triggeredByButton) {
+        Serial.print("pump = ");
+        Serial.println(pump);
+                      
         if (pump == PUMP1) {
             P1buttonPressRecentUntil = now().unixtime() + offByButtonTimer;
             Serial.println("PIPPPPPPPOOOOOOOOOOO");
