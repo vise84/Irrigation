@@ -104,9 +104,12 @@ DateTime now() {
 
 
 bool IsPumpOn(PumpID pump) {
+    Serial.println("bool isPumpOn");
     if (pump == PUMP1) {
+        Serial.println("return P1isON");
         return P1isOn;
     } else if (pump == PUMP2) {
+        Serial.println("return P2isON");
         return P2isOn;
     }
     return false;
@@ -175,6 +178,8 @@ void TurnOnPump(PumpID pump, bool triggeredByButton) {
         digitalWrite(IN1, LOW);   // Imposta il pin IN1 LOW 
         digitalWrite(IN2, LOW);   // Imposta il pin IN2 LOW
         P1isOn = true;
+        //Serial.print("TurnOnPump");
+        //Serial.println(pump);
     } else if (pump == PUMP2) {
         // TODO: Add code to turn on P2
         digitalWrite(IN3, HIGH);  // Imposta il pin IN1 HIGH 
@@ -183,14 +188,19 @@ void TurnOnPump(PumpID pump, bool triggeredByButton) {
         digitalWrite(IN3, LOW);   // Imposta il pin IN1 LOW 
         digitalWrite(IN4, LOW);   // Imposta il pin IN2 LOW
         P2isOn = true;
-
+        //Serial.print("TurnOnPump");
+        //Serial.println(pump);
     }
 
     if (triggeredByButton) {
         if (pump == PUMP1) {
-            P1buttonPressRecentUntil = now().unixtime() + onByButtonTimer;  
+            P1buttonPressRecentUntil = now().unixtime() + onByButtonTimer;
+        //Serial.print("triggeredByButton");
+        //Serial.println(pump);   
         } else if (pump == PUMP2) {
             P2buttonPressRecentUntil = now().unixtime() + onByButtonTimer;
+        //Serial.print("triggeredByButton");
+        //Serial.println(pump);
         }
     }
 }
@@ -205,8 +215,8 @@ void TurnOffPump(PumpID pump, bool triggeredByButton) {
         digitalWrite(IN2, LOW);   // Imposta il pin IN2 LOW
         P1isOn = false;
         P1turnedOffAt = now().unixtime();
-        Serial.print("TurnOffPump");
-        Serial.println(pump);
+        //Serial.print("TurnOffPump");
+        //Serial.println(pump);
     } else if (pump == PUMP2) {
         // TODO: Add code to turn off P2
         digitalWrite(IN3, LOW);   // Imposta il pin IN1 LOW 
@@ -216,15 +226,19 @@ void TurnOffPump(PumpID pump, bool triggeredByButton) {
         digitalWrite(IN4, LOW);   // Imposta il pin IN2 LOW 
         P2isOn = false;
         P2turnedOffAt = now().unixtime();
-        Serial.print("TurnOffPump");
-        Serial.println(pump);
+        //Serial.print("TurnOffPump");
+        //Serial.println(pump);
     }
 
     if (triggeredByButton) {    
         if (pump == PUMP1) {
             P1buttonPressRecentUntil = now().unixtime() + offByButtonTimer;
+            //Serial.print("triggeredByButton");
+            //Serial.println(pump);   
         } else if (pump == PUMP2) {
-           P2buttonPressRecentUntil = now().unixtime() + offByButtonTimer;   
+           P2buttonPressRecentUntil = now().unixtime() + offByButtonTimer;
+           //Serial.print("triggeredByButton");
+           //Serial.println(pump);   
         }
     }
 }
@@ -349,7 +363,7 @@ void loop() {
     for (PumpID pump : pumps) {
         bool pumpIsOn = IsPumpOn(pump);
         bool itsTimeToBeOn = IsItTimeToBeOn(pump);
-        bool buttonIsPressed = false; //according Puglierin request
+        bool buttonIsPressed = true; //according Puglierin request
         bool buttonPressedRecently = WasButtonPressedRecently(pump);
         
         if (!pumpIsOn) {
@@ -366,9 +380,8 @@ void loop() {
             }
         }
     }
-
     
     // time sort of updates once a second (not really...)
     delay (1000);
-   // while(1); //infinite for loop blocking
+    while(1); //infinite for loop blocking
 }
