@@ -383,5 +383,5 @@ void loop() {
     
     // time sort of updates once a second (not really...)
     delay (1000);
-    while(1); //infinite for loop blocking
+    //while(1); //infinite for loop blocking
 }
