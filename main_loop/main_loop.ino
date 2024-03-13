@@ -113,40 +113,40 @@ bool IsPumpOn(PumpID pump) {
     return false;
 }
 
-//bool IsItTimeToBeOn(PumpID pump) {
-//    int turnOnHH, turnOffHH;
-//  const int* skipDaysPerMonth;
-//  const bool* turnOnMonths;
-//
-//    unsigned long turnedOffAt;
-//
-//    if (pump == PUMP1) {
-//        turnOnHH = P1turnOnHH;
-//        turnOffHH = P1turnOffHH;
-//    turnOnMonths = P1turnOnMonths;
-//        skipDaysPerMonth = P1skipDaysPerMonth;
-//        turnedOffAt = P1turnedOffAt;
-//    } else if (pump == PUMP2) {
-//        turnOnHH = P2turnOnHH;
-//        turnOffHH = P2turnOffHH;
-//        turnOnMonths = P2turnOnMonths;
-//        skipDaysPerMonth = P2skipDaysPerMonth;
-//        turnedOffAt = P2turnedOffAt;
-//    } else {
-//        return false;
-//    }
+bool IsItTimeToBeOn(PumpID pump) {
+    int turnOnHH, turnOffHH;
+  const int* skipDaysPerMonth;
+  const bool* turnOnMonths;
 
-//    int hh = now().hour();
-//  int mm = now().month();
-//  if (turnOnMonths[mm-1] == true ){
-//    if (hh >= turnOnHH && hh < turnOffHH) {
-//      unsigned long skippedDays = (now().unixtime() - turnedOffAt) / 86400;
-//      return skippedDays >= skipDaysPerMonth[mm-1];
-//    }
-//  }
-//    
-//  return false;
-//}
+    unsigned long turnedOffAt;
+
+    if (pump == PUMP1) {
+        turnOnHH = P1turnOnHH;
+        turnOffHH = P1turnOffHH;
+    turnOnMonths = P1turnOnMonths;
+        skipDaysPerMonth = P1skipDaysPerMonth;
+        turnedOffAt = P1turnedOffAt;
+    } else if (pump == PUMP2) {
+        turnOnHH = P2turnOnHH;
+        turnOffHH = P2turnOffHH;
+        turnOnMonths = P2turnOnMonths;
+        skipDaysPerMonth = P2skipDaysPerMonth;
+        turnedOffAt = P2turnedOffAt;
+    } else {
+        return false;
+    }
+
+    int hh = now().hour();
+  int mm = now().month();
+  if (turnOnMonths[mm-1] == true ){
+    if (hh >= turnOnHH && hh < turnOffHH) {
+      unsigned long skippedDays = (now().unixtime() - turnedOffAt) / 86400;
+      return skippedDays >= skipDaysPerMonth[mm-1];
+    }
+  }
+    
+  return false;
+}
 
 bool IsButtonPressed(PumpID pump) {
       if (pump == PUMP1) {
