@@ -27,8 +27,8 @@ enum PumpID {
 
 // Settings
 // scheduling
-const unsigned long onByButtonTimer = 10000; // 10 sec in milliseconds
-const unsigned long offByButtonTimer = 10000; // 10sec in milliseconds
+const unsigned long onByButtonTimer = 3600000; // 60 minutes in milliseconds
+const unsigned long offByButtonTimer = 7200000; // 120 minutes in milliseconds
 
 const int P1turnOnHH = 1;
 const int P1turnOffHH = 2;
@@ -59,7 +59,7 @@ char buffer[10];
 unsigned long time=0;
 unsigned long timeSet=0;
 float temp=0;
-//DateTime currentTime;
+DateTime currentTime;
 
 
 void setup() {
@@ -67,6 +67,7 @@ void setup() {
     Wire.begin();
     rtc.begin();
     lcd.begin();
+
     // Initialize the RTC module
     if (!rtc.begin()) {
         Serial.println("Couldn't find RTC");
@@ -86,8 +87,8 @@ void setup() {
     pinMode(IN2, OUTPUT);
     pinMode(IN3, OUTPUT);
     pinMode(IN4, OUTPUT);
-    pinMode(LED1, OUTPUT);
-    pinMode(LED2, OUTPUT);
+//  pinMode(LED1, OUTPUT);
+//    pinMode(LED2, OUTPUT);
     pinMode (BUTTON1, INPUT_PULLUP);
     pinMode (BUTTON2, INPUT_PULLUP);
     
@@ -104,51 +105,48 @@ DateTime now() {
 
 
 bool IsPumpOn(PumpID pump) {
-    Serial.println("bool isPumpOn");
     if (pump == PUMP1) {
-        Serial.println("return P1isON");
         return P1isOn;
     } else if (pump == PUMP2) {
-        Serial.println("return P2isON");
         return P2isOn;
     }
     return false;
 }
 
-bool IsItTimeToBeOn(PumpID pump) {
-    int turnOnHH, turnOffHH;
-    const int* skipDaysPerMonth;
-    const bool* turnOnMonths;
+//bool IsItTimeToBeOn(PumpID pump) {
+//    int turnOnHH, turnOffHH;
+//  const int* skipDaysPerMonth;
+//  const bool* turnOnMonths;
+//
+//    unsigned long turnedOffAt;
+//
+//    if (pump == PUMP1) {
+//        turnOnHH = P1turnOnHH;
+//        turnOffHH = P1turnOffHH;
+//    turnOnMonths = P1turnOnMonths;
+//        skipDaysPerMonth = P1skipDaysPerMonth;
+//        turnedOffAt = P1turnedOffAt;
+//    } else if (pump == PUMP2) {
+//        turnOnHH = P2turnOnHH;
+//        turnOffHH = P2turnOffHH;
+//        turnOnMonths = P2turnOnMonths;
+//        skipDaysPerMonth = P2skipDaysPerMonth;
+//        turnedOffAt = P2turnedOffAt;
+//    } else {
+//        return false;
+//    }
 
-    unsigned long turnedOffAt;
-
-    if (pump == PUMP1) {
-        turnOnHH = P1turnOnHH;
-        turnOffHH = P1turnOffHH;
-        turnOnMonths = P1turnOnMonths;
-        skipDaysPerMonth = P1skipDaysPerMonth;
-        turnedOffAt = P1turnedOffAt;
-    } else if (pump == PUMP2) {
-        turnOnHH = P2turnOnHH;
-        turnOffHH = P2turnOffHH;
-        turnOnMonths = P2turnOnMonths;
-        skipDaysPerMonth = P2skipDaysPerMonth;
-        turnedOffAt = P2turnedOffAt;
-    } else {
-        return false;
-    }
-
-  int hh = now().hour();
-  int mm = now().month();
-  if (turnOnMonths[mm-1] == true ){
-    if (hh >= turnOnHH && hh < turnOffHH) {
-      unsigned long skippedDays = (now().unixtime() - turnedOffAt) / 86400;
-      return skippedDays >= skipDaysPerMonth[mm-1];
-    }
-  }
-    
-  return false;
-}
+//    int hh = now().hour();
+//  int mm = now().month();
+//  if (turnOnMonths[mm-1] == true ){
+//    if (hh >= turnOnHH && hh < turnOffHH) {
+//      unsigned long skippedDays = (now().unixtime() - turnedOffAt) / 86400;
+//      return skippedDays >= skipDaysPerMonth[mm-1];
+//    }
+//  }
+//    
+//  return false;
+//}
 
 bool IsButtonPressed(PumpID pump) {
       if (pump == PUMP1) {
@@ -176,31 +174,23 @@ void TurnOnPump(PumpID pump, bool triggeredByButton) {
         digitalWrite(IN2, LOW);   // Imposta il pin IN2 LOW 
         delay(2000);
         digitalWrite(IN1, LOW);   // Imposta il pin IN1 LOW 
-        digitalWrite(IN2, LOW);   // Imposta il pin IN2 LOW
+        digitalWrite(IN2, LOW);   // Imposta il pin IN2 LOW 
         P1isOn = true;
-        //Serial.print("TurnOnPump");
-        //Serial.println(pump);
     } else if (pump == PUMP2) {
         // TODO: Add code to turn on P2
         digitalWrite(IN3, HIGH);  // Imposta il pin IN1 HIGH 
         digitalWrite(IN4, LOW);   // Imposta il pin IN2 LOW 
         delay(2000);
         digitalWrite(IN3, LOW);   // Imposta il pin IN1 LOW 
-        digitalWrite(IN4, LOW);   // Imposta il pin IN2 LOW
+        digitalWrite(IN4, LOW);   // Imposta il pin IN2 LOW 
         P2isOn = true;
-        //Serial.print("TurnOnPump");
-        //Serial.println(pump);
     }
 
     if (triggeredByButton) {
         if (pump == PUMP1) {
             P1buttonPressRecentUntil = now().unixtime() + onByButtonTimer;
-        //Serial.print("triggeredByButton");
-        //Serial.println(pump);   
         } else if (pump == PUMP2) {
             P2buttonPressRecentUntil = now().unixtime() + onByButtonTimer;
-        //Serial.print("triggeredByButton");
-        //Serial.println(pump);
         }
     }
 }
@@ -212,11 +202,9 @@ void TurnOffPump(PumpID pump, bool triggeredByButton) {
         digitalWrite(IN2, HIGH);   // Imposta il pin IN2 HIGH 
         delay(2000);
         digitalWrite(IN1, LOW);   // Imposta il pin IN1 LOW 
-        digitalWrite(IN2, LOW);   // Imposta il pin IN2 LOW
+        digitalWrite(IN2, LOW);   // Imposta il pin IN2 LOW 
         P1isOn = false;
         P1turnedOffAt = now().unixtime();
-        //Serial.print("TurnOffPump");
-        //Serial.println(pump);
     } else if (pump == PUMP2) {
         // TODO: Add code to turn off P2
         digitalWrite(IN3, LOW);   // Imposta il pin IN1 LOW 
@@ -226,19 +214,13 @@ void TurnOffPump(PumpID pump, bool triggeredByButton) {
         digitalWrite(IN4, LOW);   // Imposta il pin IN2 LOW 
         P2isOn = false;
         P2turnedOffAt = now().unixtime();
-        //Serial.print("TurnOffPump");
-        //Serial.println(pump);
     }
 
-    if (triggeredByButton) {    
+    if (triggeredByButton) {
         if (pump == PUMP1) {
             P1buttonPressRecentUntil = now().unixtime() + offByButtonTimer;
-            //Serial.print("triggeredByButton");
-            //Serial.println(pump);   
         } else if (pump == PUMP2) {
-           P2buttonPressRecentUntil = now().unixtime() + offByButtonTimer;
-           //Serial.print("triggeredByButton");
-           //Serial.println(pump);   
+            P2buttonPressRecentUntil = now().unixtime() + offByButtonTimer;
         }
     }
 }
@@ -352,7 +334,7 @@ bool isItTimeToSetTime() {
 void loop() {
 
     refreshScreen();
-   
+
     if (analogRead (SET) < 1000) { time = millis();}
 
     if (isItTimeToSetTime()) {
@@ -363,9 +345,9 @@ void loop() {
     for (PumpID pump : pumps) {
         bool pumpIsOn = IsPumpOn(pump);
         bool itsTimeToBeOn = IsItTimeToBeOn(pump);
-        bool buttonIsPressed = true; //according Puglierin request
+        bool buttonIsPressed = IsButtonPressed(pump);
         bool buttonPressedRecently = WasButtonPressedRecently(pump);
-        
+
         if (!pumpIsOn) {
             if (buttonIsPressed) {
                 TurnOnPump(pump, true);
@@ -382,6 +364,5 @@ void loop() {
     }
     
     // time sort of updates once a second (not really...)
-    delay (1000);
-    //while(1); //infinite for loop blocking
+    delay (500);
 }
