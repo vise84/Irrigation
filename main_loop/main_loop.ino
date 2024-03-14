@@ -149,16 +149,21 @@ bool IsItTimeToBeOn(PumpID pump) {
 }
 
 bool IsButtonPressed(PumpID pump) {
-      if (pump == PUMP1) {
-       if (digitalRead (BUTTON1) == 0) {
-      return true;
-        } 
-    return false;
-      }
+//      if (pump == PUMP1) {
+//         
+//         if (digitalRead (BUTTON1) == 0) {
+//          Serial.println("IsButtonPressed: BUTTON1=true");
+//            return true;
+//         } 
+//         Serial.println("IsButtonPressed: BUTTON1=false");
+//         return false;
+//      }
     if (pump == PUMP2) {
        if (digitalRead (BUTTON2) == 0) {
+      Serial.println("IsButtonPressed: BUTTON2=true");
       return true;
         } 
+        Serial.println("IsButtonPressed: BUTTON2=false");
     return false;
       }
 }
@@ -176,6 +181,7 @@ void TurnOnPump(PumpID pump, bool triggeredByButton) {
         digitalWrite(IN1, LOW);   // Imposta il pin IN1 LOW 
         digitalWrite(IN2, LOW);   // Imposta il pin IN2 LOW 
         P1isOn = true;
+        Serial.println("TurnOnPump: pump" + String(pump));
     } else if (pump == PUMP2) {
         // TODO: Add code to turn on P2
         digitalWrite(IN3, HIGH);  // Imposta il pin IN1 HIGH 
@@ -184,6 +190,7 @@ void TurnOnPump(PumpID pump, bool triggeredByButton) {
         digitalWrite(IN3, LOW);   // Imposta il pin IN1 LOW 
         digitalWrite(IN4, LOW);   // Imposta il pin IN2 LOW 
         P2isOn = true;
+        Serial.println("TurnOnPump: pump" + String(pump));
     }
 
     if (triggeredByButton) {
@@ -205,6 +212,7 @@ void TurnOffPump(PumpID pump, bool triggeredByButton) {
         digitalWrite(IN2, LOW);   // Imposta il pin IN2 LOW 
         P1isOn = false;
         P1turnedOffAt = now().unixtime();
+        Serial.println("TurnOffPump: pump" + String(pump));
     } else if (pump == PUMP2) {
         // TODO: Add code to turn off P2
         digitalWrite(IN3, LOW);   // Imposta il pin IN1 LOW 
@@ -214,6 +222,7 @@ void TurnOffPump(PumpID pump, bool triggeredByButton) {
         digitalWrite(IN4, LOW);   // Imposta il pin IN2 LOW 
         P2isOn = false;
         P2turnedOffAt = now().unixtime();
+        Serial.println("TurnOffPump: pump" + String(pump));
     }
 
     if (triggeredByButton) {
@@ -342,16 +351,50 @@ void loop() {
     }
 
     PumpID pumps[] = {PUMP1, PUMP2};
-    for (PumpID pump : pumps) {
-        bool pumpIsOn = IsPumpOn(pump);
-        bool itsTimeToBeOn = IsItTimeToBeOn(pump);
-        bool buttonIsPressed = IsButtonPressed(pump);
-        bool buttonPressedRecently = WasButtonPressedRecently(pump);
+    PumpID pump;
+    bool pumpIsOn;
+    bool itsTimeToBeOn;
+    bool buttonIsPressed;
+    bool buttonPressedRecently;
 
+//    bool buttonIsPressed = true;
+//    for (int i=0; i<2; i++){
+//        pump=PUMP1;
+//        pumpIsOn = IsPumpOn(pump);
+//        itsTimeToBeOn = IsItTimeToBeOn(pump);
+//        buttonIsPressed = IsButtonPressed(pump);
+//        buttonPressedRecently = WasButtonPressedRecently(pump);
+//
+//        //Serial.println("main loop: buttonIsPressed 0 " + String(buttonIsPressed));
+//        if (!pumpIsOn) {
+//            if (buttonIsPressed) {
+//                Serial.println("main loop, turnOnPump");
+//                TurnOnPump(pump, true);
+//            }
+//        } else {
+//            if (buttonIsPressed) {
+//                Serial.println("main loop, turnOffPump");
+//                TurnOffPump(pump, true);
+//            }
+//        }
+//    }
+//   for (int i=0; i<2; i++){
+        pump=PUMP2;
+        pumpIsOn = IsPumpOn(pump);
+        itsTimeToBeOn = IsItTimeToBeOn(pump);
+        buttonIsPressed = IsButtonPressed(pump);
+        buttonPressedRecently = WasButtonPressedRecently(pump);
+
+        //Serial.println("main loop: pumpIsOn " + String(pumpIsOn));
         if (!pumpIsOn) {
+            //Serial.println("main loop: itsTimeToBeOn" + String(itsTimeToBeOn));
+            //Serial.println("main loop: buttonPressedRecently" + String(buttonPressedRecently));
             if (buttonIsPressed) {
                 TurnOnPump(pump, true);
-            } else if (itsTimeToBeOn && !buttonPressedRecently) {
+            }
+            Serial.println((itsTimeToBeOn == true) == false);
+            if (itsTimeToBeOn == true) {
+                Serial.println("main loop: inside if");
                 TurnOnPump(pump, false);
             }
         } else {
@@ -361,8 +404,8 @@ void loop() {
                 TurnOffPump(pump, false);
             }
         }
-    }
-    
+//    } 
     // time sort of updates once a second (not really...)
     delay (500);
+    //while(1);
 }
